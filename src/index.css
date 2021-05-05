@@ -1,0 +1,9 @@
+body {
+  max-width: 1170px;
+  margin: 0 auto;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}

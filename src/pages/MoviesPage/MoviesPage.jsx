@@ -33,11 +33,17 @@ class MoviesPage extends Component {
         }
     }
 
-    onChangeQuery = ( query ) => {
+    onChangeQuery = (query) => {
+        const { history } = this.props;
              this.setState({
                 query,
                 movies: [],
-                loading: true})
+                 loading: true
+             })
+        history.push({
+            pathname: this.props.location.pathname,
+            search: `query=${query}`
+            });
         }
    
 

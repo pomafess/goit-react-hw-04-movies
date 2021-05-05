@@ -11,43 +11,34 @@ class HomePage extends Component {
         loading: false,
         error: null
     }
-
-    async componentDidMount() {
-
-        const { data } = await getTrendsMovies();
-        this.setState({movies: data.results})
     
+    componentDidMount() {
+            this.setState({
+                loading: true
+            })
+        }
+
+    async componentDidUpdate() {
+        const {loading} = this.state;
+
+        if (loading) {
+            try {
+                const { data } = await getTrendsMovies();
+                this.setState(({movies}) => {
+                    return {
+                        movies: data.results,
+                        loading: false
+                    }
+                })
+            }
+            catch (error) {
+                this.setState({
+                    loading: false,
+                    error
+                })
+            }
+        }
     }
-    // componentDidMount() {
-    //         this.setState({
-    //             loading: true
-    //         })
-    //     }
-
-    // async componentDidUpdate() {
-    //     // const {loading} = this.state;
-
-    //     // if (loading) {
-    //     //     try {
-    //     //         // const {search} = this.props.location;
-    //     //         // const params = qs.parse(search.slice(1));
-
-    //     //         const { data } = await getTrendsMovies();
-    //     //         console.log(data)
-    //     //         this.setState(({movies}) => {
-    //     //             return {
-    //     //                 movies: data.results,
-    //     //                 loading: false
-    //     //             }
-    //     //         })
-    //     //     } catch (error) {
-    //     //         this.setState({
-    //     //             loading: false,
-    //     //             error
-    //     //         })
-    //     //     }
-    //     // }
-    // }
     render() {
         const {loading, error, movies} = this.state;
 

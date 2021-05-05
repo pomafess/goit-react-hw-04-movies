@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 
+import ReviewsItem from "../../components/RewiewsItem"
 import {getReviewsById} from "../../components/Service/moviesService"
 
 class ReviewsPage extends Component {
@@ -8,25 +9,29 @@ class ReviewsPage extends Component {
         error: null
     };
 
+  
      async componentDidMount() {
-        const {movieId} = this.props.match.params
-        const { data } = await getReviewsById(movieId);
-         this.setState({ reviews: data.results})
-        }
+       const { movieId } = this.props.match.params;
+       try {
+         const { data } = await getReviewsById(movieId);
+         this.setState({ reviews: data.results })
+       }
+       catch (error) {
+                this.setState({
+                    error
+                })
+            }
+      }
+  
     render(){
         const { reviews, error } = this.state;
-        const reviewsItem = reviews.map(({ id, author, content }) => (
-            <li key={id}>
-              <h4> Author: {author}</h4>
-              <p>{content}</p>
-            </li>
-          ))
     return (
       <>
-        <ul>
-          {reviewsItem}
-        </ul>
-        {error && <h3 className="ErrorMessage">{error.message}</h3>}
+       {error && <p>Не удалось загрузить страницу</p>}
+        {!error &&
+          <ul>
+          <ReviewsItem reviews={reviews}/>
+        </ul>}
       </>
     );
   }

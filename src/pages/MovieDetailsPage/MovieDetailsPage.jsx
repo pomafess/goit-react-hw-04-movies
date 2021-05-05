@@ -1,5 +1,5 @@
-import React, { Component, Suspense, lazy } from 'react';
-import { NavLink, Route, Switch } from 'react-router-dom';
+import React, { Component} from 'react';
+import { NavLink} from 'react-router-dom';
 
 import FilmCard from "../../components/FilmCard";
 import Button from "../../components/Button"
@@ -8,26 +8,25 @@ import { getMovieById } from "../../components/Service/moviesService"
 
 import styles from "./MovieDetailsPage.module.css"
 
-const CastPage = lazy(() =>
-  import('../CastPage'),
-);
-
-const ReviewsPage = lazy(() =>
-  import('../ReviewsPage'),
-);
 
 class MovieDetailsPage extends Component {
     state = {
       movie: {},
-       error: null
-    };
+      error: null
+  };
 
      async componentDidMount() {
-        const {movieId} = this.props.match.params
-        const { data } = await getMovieById(movieId);
-         this.setState({ movie: data})
-        
-  }
+       const { movieId } = this.props.match.params
+       try {
+         const { data } = await getMovieById(movieId);
+         this.setState({ movie: data })
+       }
+       catch  (error) {
+                this.setState({
+                    error
+                })
+            }
+      }
   
   onButtonClickReturn = () => {
     const { location, history } = this.props;
@@ -37,17 +36,21 @@ class MovieDetailsPage extends Component {
   render() {
     console.log(this.props.match.url);
     const {
-        movie
+      movie,
+      error
     } = this.state
     
     const {
-        onButtonClickReturn
+      onButtonClickReturn
     } = this
-      return (
+    return (
+      <>
+        {error && <p>Не удалось загрузить страницу</p>}
+         {!error &&
         < div >
-          <Button text="Вернуться назад" onClick={onButtonClickReturn}/>
-            <FilmCard movie={movie} />
-            <div>
+          <Button text="Вернуться назад" onClick={onButtonClickReturn} />
+          <FilmCard movie={movie} />
+          <div>
             <h3>Additional information</h3>
 
             <ul className={styles.list}>
@@ -55,7 +58,6 @@ class MovieDetailsPage extends Component {
                 <NavLink
                   to={{
                     pathname: `${this.props.match.url}/cast`,
-                    // state: { ...this.props.location.state },
                   }}
                   className={styles.link}
                   activeClassName={styles.active}
@@ -76,22 +78,12 @@ class MovieDetailsPage extends Component {
                 </NavLink>
               </li>
             </ul>
-            <Suspense fallback={<h2>Loading...</h2>}>
-              <Switch>
-                <Route
-                  exact
-                  path={`${this.props.match.path}/cast`}
-                  component={CastPage}
-                />
-                <Route
-                  exact
-                  path={`${this.props.match.path}/reviews`}
-                  component={ReviewsPage}
-                />
-              </Switch>
-            </Suspense>
+      
           </div>
-        </div>)
+        </div>
+        }
+      </>
+    )
     }
     }
 

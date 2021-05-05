@@ -7,22 +7,44 @@ const MoviesList = lazy(() => import ("../../components/MoviesList"));
 
 class MoviesPage extends Component {
     state = {
+        query: "",
         movies: [],
         error: null,
         loading: false
     }
 
-    onChangeQuery = query => {
-        getSearchsMovies(query).then(response => { this.setState({movies: response.data.results})})
+    componentDidUpdate() {
+        const { query, loading } = this.state;
+        console.log(query)
+        if (loading) {
+            getSearchsMovies(query)
+                .then(response => {
+                    this.setState({
+                        movies: response.data.results,
+                        loading: false
+                    })
+                })
+                .catch(error => {
+                    this.setState({
+                        loading: false,
+                        error
+                    })
+                })
+        }
+    }
+
+    onChangeQuery = ( query ) => {
+             this.setState({
+                query,
+                movies: [],
+                loading: true})
         }
    
 
     render() {
-
         const {loading, error, movies} = this.state;
-
         return (
-            <div>
+            <>
                 <SearchForm onSubmit={this.onChangeQuery} />
                  <div>
                 {loading && <p>Movies loading ...</p>}
@@ -32,7 +54,7 @@ class MoviesPage extends Component {
                     <MoviesList movies={movies} />
                 </Suspense>}
                 </div>
-            </div>
+            </>
         )
     }
 

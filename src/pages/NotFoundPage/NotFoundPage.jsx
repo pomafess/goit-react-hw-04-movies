@@ -1,5 +1,5 @@
 import React from 'react';
-// import PropTypes from 'prop-types';
+
 
 const NotFoundPage = props => {
     return (
@@ -9,8 +9,6 @@ const NotFoundPage = props => {
     );
 };
 
-NotFoundPage.propTypes = {
 
-};
 
 export default NotFoundPage;
